@@ -10,4 +10,6 @@ interface UserCreationAttributes {
 export class User extends Model<User, UserCreationAttributes> {
   @Column({ type: DataTypes.STRING, primaryKey: true, unique: true })
   id: string;
+  @Column({ type: DataTypes.STRING })
+  username: string;
 }
