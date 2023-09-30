@@ -7,5 +7,7 @@ export class EvaluationsService {
   constructor(
     @InjectModel(Evaluation) private evaluationRepository: typeof Evaluation,
   ) {}
-  async createEvaluation() {}
+  async createEvaluation() {
+    return null;
+  }
 }
