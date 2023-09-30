@@ -1,5 +1,7 @@
-import { Column, Model, Table } from 'sequelize-typescript';
+import { Column, Model, Table, BelongsToMany } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
+import { User } from 'src/users/users.model';
+import { UsersEvaluations } from './users-evaluations.model';
 
 interface EvaluationsCreationAttributes {
   title: string;
@@ -28,4 +30,7 @@ export class Evaluation extends Model<
   status: string;
   @Column({ type: DataTypes.INTEGER })
   result: number;
+
+  @BelongsToMany(() => User, () => UsersEvaluations)
+  users: User[];
 }

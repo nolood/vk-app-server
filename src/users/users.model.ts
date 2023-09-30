@@ -1,5 +1,7 @@
 import { DataTypes } from 'sequelize';
-import { Column, Model, Table } from 'sequelize-typescript';
+import { BelongsToMany, Column, Model, Table } from 'sequelize-typescript';
+import { Evaluation } from 'src/evaluations/evaluations.model';
+import { UsersEvaluations } from '../evaluations/users-evaluations.model';
 
 interface UserCreationAttributes {
   id: string;
@@ -24,4 +26,7 @@ export class User extends Model<User, UserCreationAttributes> {
   photo_200: string;
   @Column({ type: DataTypes.STRING })
   photo_base: string;
+
+  @BelongsToMany(() => Evaluation, () => UsersEvaluations)
+  evaluations: Evaluation[];
 }

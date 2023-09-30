@@ -5,6 +5,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from './users/users.model';
 import { EvaluationsModule } from './evaluations/evaluations.module';
 import { Evaluation } from './evaluations/evaluations.model';
+import { UsersEvaluations } from './evaluations/users-evaluations.model';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { Evaluation } from './evaluations/evaluations.model';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      models: [User, Evaluation],
+      models: [User, Evaluation, UsersEvaluations],
       autoLoadModels: true,
     }),
     UsersModule,
