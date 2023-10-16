@@ -6,6 +6,7 @@ import { User } from './users/users.model';
 import { EvaluationsModule } from './evaluations/evaluations.module';
 import { Evaluation } from './evaluations/evaluations.model';
 import { UsersEvaluations } from './evaluations/users-evaluations.model';
+import { MascotModule } from './mascot/mascot.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { UsersEvaluations } from './evaluations/users-evaluations.model';
     }),
     UsersModule,
     EvaluationsModule,
+    MascotModule,
   ],
   controllers: [],
   providers: [],
