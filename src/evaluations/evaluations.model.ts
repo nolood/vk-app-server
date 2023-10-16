@@ -1,14 +1,16 @@
-import { Column, Model, Table, BelongsToMany } from 'sequelize-typescript';
-import { DataTypes } from 'sequelize';
-import { User } from 'src/users/users.model';
-import { UsersEvaluations } from './users-evaluations.model';
+import { Column, Model, Table, BelongsToMany } from "sequelize-typescript";
+import { DataTypes } from "sequelize";
+import { User } from "src/users/users.model";
+import { UsersEvaluations } from "./users-evaluations.model";
+import { Category } from "../categories/categories.model";
+import { EvaluationCategory } from "../categories/evaluations-categories.model";
 
 interface EvaluationsCreationAttributes {
   title: string;
   image?: string;
 }
 
-@Table({ tableName: 'evaluations' })
+@Table({ tableName: "evaluations" })
 export class Evaluation extends Model<
   Evaluation,
   EvaluationsCreationAttributes
@@ -33,4 +35,7 @@ export class Evaluation extends Model<
 
   @BelongsToMany(() => User, () => UsersEvaluations)
   users: User[];
+
+  @BelongsToMany(() => Category, () => EvaluationCategory)
+  categories: Category[];
 }
