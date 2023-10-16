@@ -65,8 +65,13 @@ export class User extends Model<User, UserCreationAttributes> {
   @Column({ type: DataTypes.INTEGER, defaultValue: 50 })
   balance: number;
 
+  @ApiProperty({
+    example: Mascot,
+    description: "Mascot",
+  })
   @HasOne(() => Mascot)
   mascot: Mascot;
+
   @BelongsToMany(() => Evaluation, () => UsersEvaluations)
   evaluations: Evaluation[];
 }
