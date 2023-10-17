@@ -10,6 +10,8 @@ import { Evaluation } from "src/evaluations/evaluations.model";
 import { UsersEvaluations } from "../evaluations/users-evaluations.model";
 import { ApiProperty } from "@nestjs/swagger";
 import { Mascot } from "../mascot/mascot.model";
+import { Constellation } from "../constellations/constellations.model";
+import { UsersConstellations } from "../constellations/users-constellation.model";
 
 interface UserCreationAttributes {
   id: string;
@@ -74,4 +76,7 @@ export class User extends Model<User, UserCreationAttributes> {
 
   @BelongsToMany(() => Evaluation, () => UsersEvaluations)
   evaluations: Evaluation[];
+
+  @BelongsToMany(() => Constellation, () => UsersConstellations)
+  constellations: Constellation[];
 }

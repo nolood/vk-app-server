@@ -13,6 +13,12 @@ import { Accessory } from "./accessories/accessories.model";
 import { PlacementsModule } from "./placements/placements.module";
 import { Placement } from "./placements/placements.model";
 import { MascotAccessory } from "./mascot/mascot-accessories.model";
+import { CategoriesModule } from "./categories/categories.module";
+import { Category } from "./categories/categories.model";
+import { EvaluationCategory } from "./categories/evaluations-categories.model";
+import { ConstellationsModule } from "./constellations/constellations.module";
+import { UsersConstellations } from "./constellations/users-constellation.model";
+import { Constellation } from "./constellations/constellations.model";
 
 @Module({
   imports: [
@@ -34,6 +40,10 @@ import { MascotAccessory } from "./mascot/mascot-accessories.model";
         Accessory,
         Placement,
         MascotAccessory,
+        Category,
+        EvaluationCategory,
+        UsersConstellations,
+        Constellation,
       ],
       autoLoadModels: true,
     }),
@@ -42,6 +52,8 @@ import { MascotAccessory } from "./mascot/mascot-accessories.model";
     MascotModule,
     AccessoriesModule,
     PlacementsModule,
+    CategoriesModule,
+    ConstellationsModule,
   ],
   controllers: [],
   providers: [],
