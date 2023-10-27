@@ -5,7 +5,6 @@ import { SequelizeModule } from "@nestjs/sequelize";
 import { User } from "./users/users.model";
 import { EvaluationsModule } from "./evaluations/evaluations.module";
 import { Evaluation } from "./evaluations/evaluations.model";
-import { UsersEvaluations } from "./evaluations/users-evaluations.model";
 import { MascotModule } from "./mascot/mascot.module";
 import { Mascot } from "./mascot/mascot.model";
 import { AccessoriesModule } from "./accessories/accessories.module";
@@ -19,6 +18,12 @@ import { EvaluationCategory } from "./categories/evaluations-categories.model";
 import { ConstellationsModule } from "./constellations/constellations.module";
 import { UsersConstellations } from "./constellations/users-constellation.model";
 import { Constellation } from "./constellations/constellations.model";
+import { CriteriaModule } from "./criteria/criteria.module";
+import { Criterion } from "./criteria/criteria.model";
+import { CommentsModule } from "./comments/comments.module";
+import { Comment } from "./comments/comments.model";
+import { CodesModule } from "./codes/codes.module";
+import { Code } from "./codes/codes.model";
 
 @Module({
   imports: [
@@ -35,7 +40,6 @@ import { Constellation } from "./constellations/constellations.model";
       models: [
         User,
         Evaluation,
-        UsersEvaluations,
         Mascot,
         Accessory,
         Placement,
@@ -44,6 +48,9 @@ import { Constellation } from "./constellations/constellations.model";
         EvaluationCategory,
         UsersConstellations,
         Constellation,
+        Criterion,
+        Comment,
+        Code,
       ],
       autoLoadModels: true,
     }),
@@ -54,6 +61,9 @@ import { Constellation } from "./constellations/constellations.model";
     PlacementsModule,
     CategoriesModule,
     ConstellationsModule,
+    CriteriaModule,
+    CommentsModule,
+    CodesModule,
   ],
   controllers: [],
   providers: [],

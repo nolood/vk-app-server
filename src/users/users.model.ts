@@ -2,16 +2,17 @@ import { DataTypes } from "sequelize";
 import {
   BelongsToMany,
   Column,
+  HasMany,
   HasOne,
   Model,
   Table,
 } from "sequelize-typescript";
 import { Evaluation } from "src/evaluations/evaluations.model";
-import { UsersEvaluations } from "../evaluations/users-evaluations.model";
 import { ApiProperty } from "@nestjs/swagger";
 import { Mascot } from "../mascot/mascot.model";
 import { Constellation } from "../constellations/constellations.model";
 import { UsersConstellations } from "../constellations/users-constellation.model";
+import { Comment } from "../comments/comments.model";
 
 interface UserCreationAttributes {
   id: string;
@@ -66,7 +67,6 @@ export class User extends Model<User, UserCreationAttributes> {
   })
   @Column({ type: DataTypes.INTEGER, defaultValue: 50 })
   balance: number;
-
   @ApiProperty({
     example: Mascot,
     description: "Mascot",
@@ -74,9 +74,12 @@ export class User extends Model<User, UserCreationAttributes> {
   @HasOne(() => Mascot)
   mascot: Mascot;
 
-  @BelongsToMany(() => Evaluation, () => UsersEvaluations)
+  @HasMany(() => Evaluation)
   evaluations: Evaluation[];
 
   @BelongsToMany(() => Constellation, () => UsersConstellations)
   constellations: Constellation[];
+
+  @HasMany(() => Comment)
+  comments: Comment[];
 }

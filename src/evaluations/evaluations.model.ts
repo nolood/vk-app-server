@@ -1,9 +1,19 @@
-import { Column, Model, Table, BelongsToMany } from "sequelize-typescript";
+import {
+  Column,
+  Model,
+  Table,
+  BelongsToMany,
+  BelongsTo,
+  ForeignKey,
+  HasMany,
+  HasOne,
+} from "sequelize-typescript";
 import { DataTypes } from "sequelize";
 import { User } from "src/users/users.model";
-import { UsersEvaluations } from "./users-evaluations.model";
 import { Category } from "../categories/categories.model";
 import { EvaluationCategory } from "../categories/evaluations-categories.model";
+import { Criterion } from "../criteria/criteria.model";
+import { Code } from "../codes/codes.model";
 
 interface EvaluationsCreationAttributes {
   title: string;
@@ -22,20 +32,35 @@ export class Evaluation extends Model<
     defaultValue: DataTypes.UUIDV4,
   })
   id: string;
+
   @Column({ type: DataTypes.STRING })
   title: string;
+
+  @Column({ type: DataTypes.STRING })
+  description: string;
+
   @Column({ type: DataTypes.STRING, allowNull: true })
   image?: string;
-  @Column({ type: DataTypes.INTEGER })
-  code: string;
-  @Column({ type: DataTypes.INTEGER })
-  status: string;
-  @Column({ type: DataTypes.INTEGER })
-  result: number;
 
-  @BelongsToMany(() => User, () => UsersEvaluations)
-  users: User[];
+  @Column({ type: DataTypes.STRING, defaultValue: "active" })
+  status: string;
+
+  @Column({ type: DataTypes.BOOLEAN, defaultValue: false })
+  private: boolean;
+
+  @HasMany(() => Criterion)
+  criteria: Criterion[];
+
+  @BelongsTo(() => User)
+  owner: User;
+
+  @ForeignKey(() => User)
+  @Column({ type: DataTypes.INTEGER })
+  ownerId: number;
 
   @BelongsToMany(() => Category, () => EvaluationCategory)
   categories: Category[];
+
+  @HasOne(() => Code)
+  code: Code;
 }
