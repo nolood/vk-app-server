@@ -1,38 +1,38 @@
+import { DataTypes } from 'sequelize'
 import {
-  BelongsTo,
-  Column,
-  ForeignKey,
-  HasMany,
-  Model,
-  Table,
-} from "sequelize-typescript";
-import { DataTypes } from "sequelize";
-import { Evaluation } from "../evaluations/evaluations.model";
-import { Comment } from "../comments/comments.model";
+	BelongsTo,
+	Column,
+	ForeignKey,
+	HasMany,
+	Model,
+	Table,
+} from 'sequelize-typescript'
+import { Comment } from '../comments/comments.model'
+import { Evaluation } from '../evaluations/evaluations.model'
 
-@Table({ tableName: "criteria" })
+@Table({ tableName: 'criteria' })
 export class Criterion extends Model<Criterion> {
-  @Column({
-    primaryKey: true,
-    type: DataTypes.BIGINT,
-    autoIncrement: true,
-    unique: true,
-  })
-  id: bigint;
+	@Column({
+		primaryKey: true,
+		type: DataTypes.BIGINT,
+		autoIncrement: true,
+		unique: true,
+	})
+	id: bigint
 
-  @Column({ type: DataTypes.STRING })
-  title: string;
+	@Column({ type: DataTypes.STRING })
+	title: string
 
-  @Column({ type: DataTypes.INTEGER })
-  score: number;
+	@Column({ type: DataTypes.INTEGER, defaultValue: 0 })
+	score: number
 
-  @BelongsTo(() => Evaluation)
-  evaluation: Evaluation;
+	@BelongsTo(() => Evaluation)
+	evaluation: Evaluation
 
-  @ForeignKey(() => Evaluation)
-  @Column({ type: DataTypes.UUID })
-  evaluationId: string;
+	@ForeignKey(() => Evaluation)
+	@Column({ type: DataTypes.UUID })
+	evaluationId: string
 
-  @HasMany(() => Comment)
-  comments: Comment[];
+	@HasMany(() => Comment)
+	comments: Comment[]
 }
