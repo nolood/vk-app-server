@@ -6,7 +6,6 @@ import {
   BelongsTo,
   ForeignKey,
   HasMany,
-  HasOne,
 } from "sequelize-typescript";
 import { DataTypes } from "sequelize";
 import { User } from "src/users/users.model";
@@ -17,6 +16,10 @@ import { Code } from "../codes/codes.model";
 
 interface EvaluationsCreationAttributes {
   title: string;
+  description: string;
+  private: boolean;
+  ownerId: number;
+  codeId: bigint;
   image?: string;
 }
 
@@ -61,6 +64,10 @@ export class Evaluation extends Model<
   @BelongsToMany(() => Category, () => EvaluationCategory)
   categories: Category[];
 
-  @HasOne(() => Code)
+  @ForeignKey(() => Code)
+  @Column({ type: DataTypes.BIGINT })
+  codeId: bigint;
+
+  @BelongsTo(() => Code)
   code: Code;
 }
