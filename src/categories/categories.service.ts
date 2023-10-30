@@ -13,6 +13,12 @@ export class CategoriesService {
     return this.categoryRepository.create(dto);
   }
 
+  async getById(id: string) {
+    return this.categoryRepository.findOne({
+      where: { id },
+    });
+  }
+
   async getAllCategories() {
     return await this.categoryRepository.findAll();
   }

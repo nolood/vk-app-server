@@ -12,5 +12,6 @@ import { Evaluation } from "../evaluations/evaluations.model";
   imports: [
     SequelizeModule.forFeature([Category, EvaluationCategory, Evaluation]),
   ],
+  exports: [CategoriesService],
 })
 export class CategoriesModule {}

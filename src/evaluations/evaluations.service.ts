@@ -5,6 +5,7 @@ import { FilesService } from 'src/files/files.service'
 import { CodesService } from '../codes/codes.service'
 import { CreateEvaluationDto } from './dto/create-evaluation.dto'
 import { Evaluation } from './evaluations.model'
+import { CategoriesService } from "../categories/categories.service";
 
 @Injectable()
 export class EvaluationsService {
@@ -12,7 +13,8 @@ export class EvaluationsService {
 		@InjectModel(Evaluation) private evaluationRepository: typeof Evaluation,
 		@InjectModel(Criterion) private criterionRepository: typeof Criterion,
 		private fileService: FilesService,
-		private codesService: CodesService
+		private codesService: CodesService,
+		private categoriesService: CategoriesService
 	) {}
 	async createEvaluation(dto: CreateEvaluationDto, userId: number, image: any) {
 		const isPrivate: boolean = JSON.parse(dto.private)
@@ -30,6 +32,13 @@ export class EvaluationsService {
 			codeId: code.id,
 		}
 		const newEvaluation = await this.evaluationRepository.create(evaluation)
+
+		if (Array.isArray(categories)) {
+			for (const category of categories) {
+				const categoryInstance = await this.categoriesService.getById(category)
+				await newEvaluation.$add('categories', categoryInstance)
+			}
+		}
 
 		if (Array.isArray(criteria)) {
 			for (const criterion of criteria) {

@@ -11,6 +11,7 @@ import { Evaluation } from "./evaluations.model";
 import { EvaluationsService } from "./evaluations.service";
 import { FilesModule } from "src/files/files.module";
 import { CodesModule } from "../codes/codes.module";
+import { CategoriesModule } from "../categories/categories.module";
 
 @Module({
   controllers: [EvaluationsController],
@@ -26,6 +27,7 @@ import { CodesModule } from "../codes/codes.module";
     ]),
     FilesModule,
     CodesModule,
+    CategoriesModule
   ],
 })
 export class EvaluationsModule {}
