@@ -1,15 +1,17 @@
-import { Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
+import { Code } from "src/codes/codes.model";
 import { Criterion } from "src/criteria/criteria.model";
 import { FilesService } from "src/files/files.service";
+import { Category } from "../categories/categories.model";
+import { CategoriesService } from "../categories/categories.service";
 import { CodesService } from "../codes/codes.service";
 import { CreateEvaluationDto } from "./dto/create-evaluation.dto";
-import { Evaluation } from "./evaluations.model";
-import { CategoriesService } from "../categories/categories.service";
-import { GetAllEvaluationsQueryDto } from "./dto/get-all-evaluations-query.dto";
+import { EvaluationCodeDto } from "./dto/evaluation-code.dto";
 import { GetAllEvaluationsBodyDto } from "./dto/get-all-evaluations-body.dto";
-import { Category } from "../categories/categories.model";
-import { Op } from "sequelize";
+import { GetAllEvaluationsQueryDto } from "./dto/get-all-evaluations-query.dto";
+import { Evaluation } from "./evaluations.model";
+import { Comment } from "src/comments/comments.model";
 
 @Injectable()
 export class EvaluationsService {
@@ -25,7 +27,7 @@ export class EvaluationsService {
     const categories: string[] = JSON.parse(dto.categories);
     const criteria: string[] = JSON.parse(dto.criteria);
 
-    const fileName = await this.fileService.createFile(image);
+    const fileName: string | null = await this.fileService.createFile(image);
     const code = await this.codesService.generateUniqueCode();
     const evaluation = {
       title: dto.title,
@@ -76,6 +78,7 @@ export class EvaluationsService {
             attributes: [],
           },
         },
+        "code",
       ],
       offset,
       limit,
@@ -89,6 +92,28 @@ export class EvaluationsService {
       );
     }
     return evaluations;
+  }
+
+  async getByCode(dto: EvaluationCodeDto) {
+    const evaluation = await this.evaluationRepository.findOne({
+      include: [
+        "owner",
+        "categories",
+        {
+          model: Code,
+          where: { value: dto.code },
+        },
+        {
+          model: Criterion,
+          include: ["comments"],
+        },
+      ],
+    });
+    if (!evaluation) {
+      throw new ForbiddenException("Evaluation not found");
+    }
+
+    return evaluation;
   }
 
   async getAllEvaluations() {

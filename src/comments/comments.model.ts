@@ -18,6 +18,10 @@ export class Comment extends Model<Comment> {
     unique: true,
   })
   id: bigint;
+
+  @Column({ type: DataTypes.INTEGER })
+  score: number;
+
   @Column({ type: DataTypes.STRING })
   title: string;
 
