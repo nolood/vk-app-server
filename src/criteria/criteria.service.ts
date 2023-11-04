@@ -44,11 +44,6 @@ export class CriteriaService {
 				},
 			],
 		})
-
-		if (criterion) {
-			return false
-		}
-
-		return true
+		return criterion;
 	}
 }

@@ -43,13 +43,13 @@ export class EvaluationsController {
 		return this.evaluationsService.getAllAvailableEvaluations(body, query)
 	}
 
-	// @UseGuards(UserIdGuard)
+	@UseGuards(UserIdGuard)
 	@Get('/:code')
-	getByCode(@Param() dto: EvaluationCodeDto) {
-		return this.evaluationsService.getByCode(dto)
+	getByCode(@Param() dto: EvaluationCodeDto, @Req() req: { user: User }) {
+		return this.evaluationsService.getByCode(dto, req.user.id)
 	}
 
-	// @UseGuards(UserIdGuard)
+	//  @UseGuards(UserIdGuard)
 	@Get('/')
 	getAll() {
 		return this.evaluationsService.getAllEvaluations()

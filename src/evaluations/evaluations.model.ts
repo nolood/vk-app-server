@@ -39,7 +39,7 @@ export class Evaluation extends Model<
   @Column({ type: DataTypes.STRING })
   title: string;
 
-  @Column({ type: DataTypes.STRING })
+  @Column({ type: DataTypes.STRING(500) })
   description: string;
 
   @Column({ type: DataTypes.STRING, allowNull: true })

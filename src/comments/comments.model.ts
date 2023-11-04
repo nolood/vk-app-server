@@ -22,7 +22,7 @@ export class Comment extends Model<Comment> {
   @Column({ type: DataTypes.INTEGER })
   score: number;
 
-  @Column({ type: DataTypes.STRING })
+  @Column({ type: DataTypes.STRING(300) })
   title: string;
 
   @ForeignKey(() => Criterion)

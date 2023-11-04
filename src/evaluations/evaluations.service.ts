@@ -94,7 +94,7 @@ export class EvaluationsService {
     return evaluations;
   }
 
-  async getByCode(dto: EvaluationCodeDto) {
+  async getByCode(dto: EvaluationCodeDto, id: number) {
     const evaluation = await this.evaluationRepository.findOne({
       include: [
         "owner",
@@ -105,7 +105,10 @@ export class EvaluationsService {
         },
         {
           model: Criterion,
-          include: ["comments"],
+          include: [{
+            model: Comment,
+            where: { userId: id }
+          }],
         },
       ],
     });
