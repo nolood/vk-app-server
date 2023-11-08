@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/sequelize'
 import { Code } from 'src/codes/codes.model'
 import { Comment } from 'src/comments/comments.model'
@@ -61,41 +61,59 @@ export class EvaluationsService {
 	}
 
 	async getAllAvailableEvaluations(
-		body: GetAllEvaluationsBodyDto,
-		query: GetAllEvaluationsQueryDto
+		body?: GetAllEvaluationsBodyDto,
+		query?: GetAllEvaluationsQueryDto,
+		ownerId?: number,
+		type: string = 'public'
 	) {
 		const { page, limit } = query
 		const offset = (page - 1) * limit
-		const evaluations = await this.evaluationRepository.findAll({
-			where: {
-				private: false,
-				status: 'active',
-			},
-			include: [
-				{
-					model: Category,
-					through: {
-						attributes: [],
-					},
-				},
-				'code',
-			],
-			offset,
-			limit,
-		})
+		let evaluations
 
-		if (body.categories?.length) {
+		if (type === 'public') {
+			evaluations = await this.evaluationRepository.findAll({
+				where: {
+					private: false,
+					status: 'active',
+				},
+				include: [
+					{
+						model: Category,
+						through: {
+							attributes: [],
+						},
+					},
+					'code',
+				],
+				offset,
+				limit,
+			})
+		}
+
+		if (type === 'owner') {
+			evaluations = await this.evaluationRepository.findAll({
+				where: {
+					ownerId,
+				},
+				include: ['code'],
+				offset,
+				limit,
+			})
+		}
+
+		if (body?.categories?.length && type === 'public') {
 			return evaluations.filter(evaluation =>
 				evaluation.categories.find(category =>
 					body.categories.includes(category.id)
 				)
 			)
 		}
+
 		return evaluations
 	}
 
 	async getByCode(dto: EvaluationCodeDto, id: number) {
-		const evaluationWithComment = await this.evaluationRepository.findOne({
+		const evaluations = await this.evaluationRepository.findOne({
 			include: [
 				'owner',
 				'categories',
@@ -115,27 +133,7 @@ export class EvaluationsService {
 				},
 			],
 		})
-		if (!evaluationWithComment) {
-			const evaluation = await this.evaluationRepository.findOne({
-				include: [
-					'owner',
-					'categories',
-					{
-						model: Code,
-						where: { value: dto.code },
-					},
-					{
-						model: Criterion,
-					},
-				],
-			})
-
-			if (!evaluation) {
-				throw new ForbiddenException('Evaluation not found')
-			}
-			return evaluation
-		}
-		return evaluationWithComment
+		return evaluations
 	}
 
 	async getAllEvaluations() {

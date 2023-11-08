@@ -49,6 +49,20 @@ export class EvaluationsController {
 		return this.evaluationsService.getByCode(dto, req.user.id)
 	}
 
+	@UseGuards(UserIdGuard)
+	@Post('/my')
+	getYourEvaluations(
+		@Req() req: { user: User },
+		@Query() query: GetAllEvaluationsQueryDto
+	) {
+		return this.evaluationsService.getAllAvailableEvaluations(
+			undefined,
+			query,
+			req.user.id,
+			'owner'
+		)
+	}
+
 	//  @UseGuards(UserIdGuard)
 	@Get('/')
 	getAll() {
