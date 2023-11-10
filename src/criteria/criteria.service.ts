@@ -81,4 +81,12 @@ export class CriteriaService {
 		})
 		return criterion
 	}
+
+	async getCriteriaByEvaluation(evaluationId: string) {
+		return await this.criterionRepository.findAll({
+			where: {
+				evaluationId,
+			},
+		})
+	}
 }

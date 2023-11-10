@@ -27,4 +27,9 @@ export class CriteriaController {
 	check(@Req() req: { user: User }, @Param() data: { criterionId: bigint }) {
 		return this.criteriaService.checkAvailability(data.criterionId, req.user.id)
 	}
+
+	@Get('/:evaluationId')
+	getByEvaluation(@Param() data: { evaluationId: string }) {
+		return this.criteriaService.getCriteriaByEvaluation(data.evaluationId)
+	}
 }
