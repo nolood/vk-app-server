@@ -35,7 +35,7 @@ export class EvaluationsController {
 	}
 
 	// @UseGuards(UserIdGuard)
-	@Post('/all')
+	@Post('all')
 	getAllAvailableEvaluations(
 		@Query() query: GetAllEvaluationsQueryDto,
 		@Body() body: GetAllEvaluationsBodyDto
@@ -50,22 +50,32 @@ export class EvaluationsController {
 	}
 
 	@UseGuards(UserIdGuard)
-	@Post('/my')
+	@Post('my')
 	getYourEvaluations(
 		@Req() req: { user: User },
 		@Query() query: GetAllEvaluationsQueryDto
 	) {
-		return this.evaluationsService.getAllAvailableEvaluations(
-			undefined,
-			query,
-			req.user.id,
-			'owner'
-		)
+		return this.evaluationsService.getMyEvaluations(query, req.user.id)
 	}
 
 	//  @UseGuards(UserIdGuard)
 	@Get('/')
 	getAll() {
 		return this.evaluationsService.getAllEvaluations()
+	}
+
+	@UseGuards(UserIdGuard)
+	@Post('/finish/:id')
+	finishEvaluation(@Param() dto: { id: string }, @Req() req: { user: User }) {
+		return this.evaluationsService.finishEvaluation(dto.id, req.user.id)
+	}
+
+	@UseGuards(UserIdGuard)
+	@Post('passed')
+	getPassedEvaluations(
+		@Req() req: { user: User },
+		@Query() query: GetAllEvaluationsQueryDto
+	) {
+		return this.evaluationsService.getPassedEvaluations(req.user.id, query)
 	}
 }

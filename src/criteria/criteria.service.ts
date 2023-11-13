@@ -89,4 +89,13 @@ export class CriteriaService {
 			},
 		})
 	}
+
+	async getPassedCriteria(id: string, userId: number) {
+		return await this.criterionRepository.findAll({
+			where: {
+				evaluationId: id,
+			},
+			include: [{ model: Comment, where: { userId } }],
+		})
+	}
 }

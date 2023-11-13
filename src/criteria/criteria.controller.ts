@@ -32,4 +32,10 @@ export class CriteriaController {
 	getByEvaluation(@Param() data: { evaluationId: string }) {
 		return this.criteriaService.getCriteriaByEvaluation(data.evaluationId)
 	}
+
+	@UseGuards(UserIdGuard)
+	@Get('/passed/:id')
+	getPassedCriteria(@Param() data: { id: string }, @Req() req: { user: User }) {
+		return this.criteriaService.getPassedCriteria(data.id, req.user.id)
+	}
 }

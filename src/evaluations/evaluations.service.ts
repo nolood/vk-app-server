@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/sequelize'
 import { Code } from 'src/codes/codes.model'
 import { Comment } from 'src/comments/comments.model'
@@ -62,52 +62,51 @@ export class EvaluationsService {
 
 	async getAllAvailableEvaluations(
 		body?: GetAllEvaluationsBodyDto,
-		query?: GetAllEvaluationsQueryDto,
-		ownerId?: number,
-		type: string = 'public'
+		query?: GetAllEvaluationsQueryDto
 	) {
 		const { page, limit } = query
 		const offset = (page - 1) * limit
-		let evaluations
-
-		if (type === 'public') {
-			evaluations = await this.evaluationRepository.findAll({
-				where: {
-					private: false,
-					status: 'active',
-				},
-				include: [
-					{
-						model: Category,
-						through: {
-							attributes: [],
-						},
+		const evaluations = await this.evaluationRepository.findAll({
+			where: {
+				private: false,
+				status: 'active',
+			},
+			include: [
+				{
+					model: Category,
+					through: {
+						attributes: [],
 					},
-					'code',
-				],
-				offset,
-				limit,
-			})
-		}
-
-		if (type === 'owner') {
-			evaluations = await this.evaluationRepository.findAll({
-				where: {
-					ownerId,
 				},
-				include: ['code'],
-				offset,
-				limit,
-			})
-		}
+				'code',
+			],
+			offset,
+			limit,
+		})
 
-		if (body?.categories?.length && type === 'public') {
+		if (body?.categories?.length) {
 			return evaluations.filter(evaluation =>
 				evaluation.categories.find(category =>
 					body.categories.includes(category.id)
 				)
 			)
 		}
+
+		return evaluations
+	}
+
+	async getMyEvaluations(query?: GetAllEvaluationsQueryDto, ownerId?: number) {
+		const { page, limit } = query
+		const offset = (page - 1) * limit
+
+		const evaluations = await this.evaluationRepository.findAll({
+			where: {
+				ownerId,
+			},
+			include: ['code'],
+			offset,
+			limit,
+		})
 
 		return evaluations
 	}
@@ -139,6 +138,43 @@ export class EvaluationsService {
 	async getAllEvaluations() {
 		return await this.evaluationRepository.findAll({
 			include: ['criteria', 'owner'],
+		})
+	}
+
+	async finishEvaluation(id: string, ownerId: number) {
+		const evaluation = await this.evaluationRepository.findOne({
+			where: { id, ownerId },
+		})
+
+		if (!evaluation) {
+			throw new HttpException(
+				"Evaluation doesn't exist",
+				HttpStatus.BAD_REQUEST
+			)
+		}
+
+		await evaluation.update({ status: 'finished' })
+
+		return evaluation
+	}
+
+	async getPassedEvaluations(userId: number, query: GetAllEvaluationsQueryDto) {
+		const { page, limit } = query
+		const offset = (page - 1) * limit
+		return await this.evaluationRepository.findAll({
+			include: [
+				{
+					model: Criterion,
+					include: [
+						{
+							model: Comment,
+							where: { userId },
+						},
+					],
+				},
+			],
+			offset,
+			limit,
 		})
 	}
 }
