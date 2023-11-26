@@ -12,12 +12,14 @@ import { EvaluationCodeDto } from './dto/evaluation-code.dto'
 import { GetAllEvaluationsBodyDto } from './dto/get-all-evaluations-body.dto'
 import { GetAllEvaluationsQueryDto } from './dto/get-all-evaluations-query.dto'
 import { Evaluation } from './evaluations.model'
+import { User } from 'src/users/users.model'
 
 @Injectable()
 export class EvaluationsService {
 	constructor(
 		@InjectModel(Evaluation) private evaluationRepository: typeof Evaluation,
 		@InjectModel(Criterion) private criterionRepository: typeof Criterion,
+    @InjectModel(User) private userRepository: typeof User,
 		private fileService: FilesService,
 		private codesService: CodesService,
 		private categoriesService: CategoriesService
@@ -177,4 +179,51 @@ export class EvaluationsService {
 			limit,
 		})
 	}
+
+  async finishEvaluate(id: string, userId: number) {
+    const evaluation = await this.evaluationRepository.findOne({
+      where: { id },
+    })
+
+    if (!evaluation) {
+      throw new HttpException(
+        "Evaluation doesn't exist",
+        HttpStatus.BAD_REQUEST
+      )
+    }
+
+    const user = await this.userRepository.findOne({ where: { id: userId } })
+    
+    if (!user) {
+      throw new HttpException(
+        "User doesn't exist",
+        HttpStatus.BAD_REQUEST
+      )
+    }
+
+    const evaluationCriteria = await this.criterionRepository.count({
+      where: { evaluationId: id },
+      include: [
+        {
+          model: Comment,
+          where: { userId: userId },
+        }
+      ]
+    })
+
+    const criteriaCount = await this.criterionRepository.count({ where: { evaluationId: id } })
+
+
+    console.log(criteriaCount)
+    console.log(evaluationCriteria)
+  
+    if (evaluationCriteria === criteriaCount) {
+      await user.update({balance: user.balance + 5})
+    } else {
+      throw new HttpException("Not all criteria are passed", HttpStatus.BAD_REQUEST)
+    }
+
+    return user;
+
+  }
 }

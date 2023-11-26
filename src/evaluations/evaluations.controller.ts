@@ -4,6 +4,7 @@ import {
 	Get,
 	Param,
 	Post,
+	Put,
 	Query,
 	Req,
 	UploadedFile,
@@ -78,4 +79,13 @@ export class EvaluationsController {
 	) {
 		return this.evaluationsService.getPassedEvaluations(req.user.id, query)
 	}
+
+  @UseGuards(UserIdGuard)
+  @Put("finish-evaluate/:evaluationId")
+  finishEvaluate(
+    @Req() req: { user: User },
+    @Param() dto: { evaluationId: string },
+  ) {
+    return this.evaluationsService.finishEvaluate(dto.evaluationId, req.user.id) 
+  }
 }
